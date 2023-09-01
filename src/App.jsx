@@ -25,6 +25,8 @@ const fooCampaigns = [
   },
 ];
 import { useEffect, useState } from "react";
+import IndividualPage from "./components/IndividualPage";
+
 function App() {
   // const campaignList = fooCampaigns.map((campaign) => (
   //   <li key={campaign.id}>
@@ -36,16 +38,15 @@ function App() {
   const [apiCampaigns, setApiCampaigns] = useState([])
   const [campaigns, setCampaigns] = useState(fooCampaigns);
 
-  // const fetchFunction = async (url)=>{
-  //   const res = await fetch(
-  //     url,
-  //     {mode: 'no-cors'}
-  //     );
+  const fetchFunction = async (url)=>{
+    const res = await fetch(
+      url
+      );
 
-  //   console.log(res);
-  //   const data = res.json();
-  //   setApiCampaigns(data);
-  // }
+    const data = await res.json();
+    setApiCampaigns(data);
+    console.log(data);
+  }
 
   function formatDates (){
 
@@ -95,19 +96,15 @@ function App() {
   }
 
   useEffect(()=>{
+    fetchFunction("https://cclan.s3.eu-west-1.amazonaws.com/campaigns.json")
+
     formatDates();
     formatNumbers();
+  
     
-    // fetchFunction("https://cclan.s3.eu-west-1.amazonaws.com/campaigns.json")
-    // fetch("http://localhost:9000/api/campaigns")
-    // .then((res)=>res.json())
-    // .then((data)=>{
-    //   console.log(data)
-    //   setApiCampaigns(data)
-    // })
   }, [])
 
-
+  
   return (
     <>
       <h1>List of Campaigns</h1>
@@ -122,7 +119,7 @@ function App() {
         </tr>
         </thead>
         <tbody>
-        {fooCampaigns.map(campaign => (
+        {apiCampaigns.map(campaign => (
           <tr key={campaign.id}>
             <td className="campaign-col">{campaign.title}</td>
             <td>{campaign.startdate}</td>
@@ -133,6 +130,7 @@ function App() {
         ))}
         </tbody>
       </table>
+      <IndividualPage campaignId={fooCampaigns[0].id} campaigns={fooCampaigns}/>
     </>
   );
 }
