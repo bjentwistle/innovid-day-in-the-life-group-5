@@ -24,7 +24,7 @@ const fooCampaigns = [
     totalResponse: 13408,
   },
 ];
-
+import { useEffect, useState } from "react";
 function App() {
   // const campaignList = fooCampaigns.map((campaign) => (
   //   <li key={campaign.id}>
@@ -33,7 +33,28 @@ function App() {
   //     Responses {campaign.totalResponse}
   //   </li>
   // ));
+  const [apiCampaigns, setApiCampaigns] = useState([])
 
+  // const fetchFunction = async (url)=>{
+  //   const res = await fetch(
+  //     url,
+  //     {mode: 'no-cors'}
+  //     );
+
+  //   console.log(res);
+  //   const data = res.json();
+  //   setApiCampaigns(data);
+  // }
+
+  useEffect(()=>{
+    // fetchFunction("https://cclan.s3.eu-west-1.amazonaws.com/campaigns.json")
+    // fetch("http://localhost:9000/api/campaigns")
+    // .then((res)=>res.json())
+    // .then((data)=>{
+    //   console.log(data)
+    //   setApiCampaigns(data)
+    // })
+  }, [])
 
 
   return (
