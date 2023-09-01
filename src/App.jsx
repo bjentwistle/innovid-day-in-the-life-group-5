@@ -34,6 +34,7 @@ function App() {
   //   </li>
   // ));
   const [apiCampaigns, setApiCampaigns] = useState([])
+  const [campaigns, setCampaigns] = useState(fooCampaigns);
 
   // const fetchFunction = async (url)=>{
   //   const res = await fetch(
@@ -46,7 +47,22 @@ function App() {
   //   setApiCampaigns(data);
   // }
 
+  function formatDates (){
+
+    for (let idx = 0; idx < fooCampaigns.length; idx += 1){
+      console.log(fooCampaigns[idx]);
+      let startdate = fooCampaigns[idx].startdate.split(/\//);
+      fooCampaigns[idx].startdate = [startdate[1],startdate[0],startdate[2]].join('/');
+      let enddate = fooCampaigns[idx].enddate.split(/\//);
+      fooCampaigns[idx].enddate = [enddate[1], enddate[0], enddate[2]].join('/');
+    }
+    setCampaigns(fooCampaigns);
+
+  }
+
   useEffect(()=>{
+    formatDates();
+    
     // fetchFunction("https://cclan.s3.eu-west-1.amazonaws.com/campaigns.json")
     // fetch("http://localhost:9000/api/campaigns")
     // .then((res)=>res.json())
