@@ -1,110 +1,127 @@
-const fooCampaigns = [
-  {
-    id: 163461455,
-    title: 'Campaign 1',
-    startdate: '01/01/2023',
-    enddate: '31/02/2023',
-    totalImpressions: 1113,
-    totalResponse: 11008,
-  },
-  {
-    id: 163461454,
-    title: 'Campaign 2',
-    startdate: '01/04/2023',
-    enddate: '27/08/2023',
-    totalImpressions: 1234551113,
-    totalResponse: 55611008,
-  },
-  {
-    id: 163461453,
-    title: 'Campaign 3',
-    startdate: '09/09/2021',
-    enddate: '31/10/2021',
-    totalImpressions: 12133,
-    totalResponse: 13408,
-  },
-];
 import { useEffect, useState } from "react";
-import IndividualPage from "./components/IndividualPage";
+//import IndividualPage from "./components/IndividualPage";
 
 function App() {
-  // const campaignList = fooCampaigns.map((campaign) => (
-  //   <li key={campaign.id}>
-  //     {campaign.title} | start date: {campaign.startdate} | end date:{' '}
-  //     {campaign.enddate} | Total Impressions {campaign.totalImpressions} | Total
-  //     Responses {campaign.totalResponse}
-  //   </li>
-  // ));
-  const [apiCampaigns, setApiCampaigns] = useState([])
-  const [campaigns, setCampaigns] = useState(fooCampaigns);
+
+  const apiUrl = "https://cclan.s3.eu-west-1.amazonaws.com/campaigns.json";
+
+  const [apiCampaigns, setApiCampaigns] = useState([]);
+  //const [campaigns, setCampaigns] = useState(apiCampaigns);
 
   const fetchFunction = async (url)=>{
-    const res = await fetch(
-      url
-      );
 
-    const data = await res.json();
-    setApiCampaigns(data);
-    console.log(data);
-  }
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
 
-  function formatDates (){
+      console.log("data from fetch", data)
 
-    for (let idx = 0; idx < fooCampaigns.length; idx += 1){
-      console.log(fooCampaigns[idx]);
-      let startdate = fooCampaigns[idx].startdate.split(/\//);
-      fooCampaigns[idx].startdate = [startdate[1],startdate[0],startdate[2]].join('/');
-      let enddate = fooCampaigns[idx].enddate.split(/\//);
-      fooCampaigns[idx].enddate = [enddate[1], enddate[0], enddate[2]].join('/');
+      // Format the data immediately after fetching
+      const formattedData = formatData(data);
+      
+      //setApiCampaigns(formattedData);
+      // setApiCampaigns(data);
+        
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    setCampaigns(fooCampaigns);
-
-  }
-
-  //format numbers 
-  function formatNumbers(){
   
-    for (let idx = 0; idx < fooCampaigns.length; idx += 1){
-      let totalImpressions = fooCampaigns[idx].totalImpressions;
-      let totalResponse = fooCampaigns[idx].totalResponse;
+  } 
+  
+  // function formatDates(campaigns) {
+  // const formattedCampaigns = campaigns.map((campaign) => {
+  //   const hasStartDate = campaign.startdate;
+  //   const hasEndDate = campaign.enddate;
+
+  //   if (hasStartDate || hasEndDate) {
+  //     if (hasStartDate) {
+  //       const startdate = campaign.startdate.split(/\//);
+  //       const formattedStartDate = [startdate[1], startdate[0], startdate[2]].join('/');
+  //       campaign.startdate = formattedStartDate;
+  //     }
+
+  //     if (hasEndDate) {
+  //       const enddate = campaign.enddate.split(/\//);
+  //       const formattedEndDate = [enddate[1], enddate[0], enddate[2]].join('/');
+  //       campaign.enddate = formattedEndDate;
+  //     }
+  //   }
+
+  //   return {
+  //     ...campaign.startdate,
+  //     ...campaign.enddate
+  //   };
+    
+  // });
+
+  
+// }
+  
+  function formatData(campaigns) {
+    const formattedCampaigns = campaigns.map((campaign) => {
+      let totalImpressions = campaign.totalImpressions;
+      let totalResponse = campaign.totalResponse;
+      const hasStartDate = campaign.startdate;
+      const hasEndDate = campaign.enddate;
+
+    if (hasStartDate || hasEndDate) {
+      if (hasStartDate) {
+        const startdate = campaign.startdate.split(/\//);
+        const formattedStartDate = [startdate[1], startdate[0], startdate[2]].join('-');
+        campaign.startdate = formattedStartDate;
+      }
+
+      if (hasEndDate) {
+        const enddate = campaign.enddate.split(/\//);
+        const formattedEndDate = [enddate[1], enddate[0], enddate[2]].join('-');
+        campaign.enddate = formattedEndDate;
+      }
+  
+    }
       switch (true) {
         case totalImpressions >= 1000000000: // For billions
-        fooCampaigns[idx].totalImpressions = (totalImpressions / 1000000000).toFixed(1) + 'b';
-        fooCampaigns[idx].totalResponse = (totalResponse / 1000000000).toFixed(2) + 'b';
-      
+          totalImpressions = (totalImpressions / 1000000000).toFixed(1) + 'b';
+          totalResponse = (totalResponse / 1000000000).toFixed(1) + 'b';
           break;
         case totalImpressions >= 1000000: // For millions
-        fooCampaigns[idx].totalImpressions = (totalImpressions / 1000000).toFixed(1) + 'm';
-        fooCampaigns[idx].totalResponse = (totalResponse / 1000000).toFixed(2) + 'm';
-       
+          totalImpressions = (totalImpressions / 1000000).toFixed(1) + 'm';
+          totalResponse = (totalResponse / 1000000).toFixed(1) + 'm';
           break;
         case totalImpressions >= 1000: // For thousands
-        fooCampaigns[idx].totalImpressions = (totalImpressions / 1000).toFixed(1) + 'k';
-        fooCampaigns[idx].totalResponse = (totalResponse / 1000).toFixed(2) + 'k';
-   
+          totalImpressions = (totalImpressions / 1000).toFixed(1) + 'k';
+          totalResponse = (totalResponse / 1000).toFixed(1) + 'k';
           break;
         default:
-          fooCampaigns[idx].totalImpressions = totalImpressions.toString();
-          fooCampaigns[idx].totalResponse = totalResponse.toString();
-        
+          totalImpressions = totalImpressions;
+          totalResponse = totalResponse;
       }
-      
-    }
-    setCampaigns(fooCampaigns.totalImpressions,
-                fooCampaigns.totalResponse);
-
+    
+      return {
+        ...campaign,
+        totalImpressions,
+        totalResponse,
+      };
+  });
+    setApiCampaigns(formattedCampaigns);
+    console.log("formatted numbers", formattedCampaigns)
+    
   }
 
-  useEffect(()=>{
-    fetchFunction("https://cclan.s3.eu-west-1.amazonaws.com/campaigns.json")
 
-    formatDates();
-    formatNumbers();
-  
-    
+  useEffect(()=>{
+    fetchFunction(apiUrl)
   }, [])
 
+  // useEffect(() => {
+  //   // Check if apiCampaigns has data
+  //   //if (apiCampaigns.length > 0) {
+  //     formatDates();
+  //     formatNumbers();
+  //   //}
+  // }, []);
   
+
   return (
     <>
       <h1>List of Campaigns</h1>
@@ -130,7 +147,7 @@ function App() {
         ))}
         </tbody>
       </table>
-      <IndividualPage campaignId={fooCampaigns[0].id} campaigns={fooCampaigns}/>
+      {/* <IndividualPage campaignId={apiCampaigns.id} campaigns={apiCampaigns}/> */}
     </>
   );
 }
