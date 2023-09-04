@@ -30,8 +30,12 @@ tr:hover {
     background-color: #F5F5F5;
 }
 
+.status-col{
+    width: 80px;
+
+}
 .campaign-col{
-    width: 600px;
+    width: 550px;
     color: blue;
 }
 

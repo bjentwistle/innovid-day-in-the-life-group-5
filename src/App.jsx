@@ -94,7 +94,7 @@ function App() {
         {apiCampaigns.map(campaign => (
           <tr key={campaign.id}>
             <td className="campaign-col">{campaign.title}</td>
-            <td>{campaign.status}</td>
+            <td className="status-col">{campaign.status}</td>
             <td>{campaign.startdate}</td>
             <td>{campaign.enddate}</td>
             <td>{campaign.totalImpressions}</td>
